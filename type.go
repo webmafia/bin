@@ -62,9 +62,6 @@ func getType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (t Typ
 	case reflect.Array:
 		panic("not implemented yet")
 
-	case reflect.Map:
-		panic("not implemented yet")
-
 	case reflect.Slice:
 		return getSliceType(typ, offset, hasher)
 
