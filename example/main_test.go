@@ -3,49 +3,10 @@ package main
 import (
 	"reflect"
 	"testing"
-	"unsafe"
 
-	"github.com/viant/xunsafe"
 	bin "github.com/webbmaffian/go-binary"
 	"github.com/webbmaffian/go-fast"
 )
-
-func BenchmarkReflectTypeOf(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = reflect.TypeOf(Foo{})
-	}
-}
-
-func BenchmarkReflectFieldByName(b *testing.B) {
-	fooType := reflect.TypeOf(Foo{})
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		_ = xunsafe.FieldByName(fooType, "ID")
-	}
-}
-
-func BenchmarkReflectFieldValue(b *testing.B) {
-	fooType := reflect.TypeOf(Foo{})
-	fooID := xunsafe.FieldByName(fooType, "ID")
-	foo := Foo{}
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		_ = fooID.Int(unsafe.Pointer(&foo))
-	}
-}
-
-func BenchmarkReflectFieldInterfaceValue(b *testing.B) {
-	fooType := reflect.TypeOf(Foo{})
-	field := xunsafe.FieldByName(fooType, "Name")
-	foo := Foo{}
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		_ = field.Value(unsafe.Pointer(&foo))
-	}
-}
 
 func BenchmarkEncode(b *testing.B) {
 	var key [32]byte
@@ -56,7 +17,7 @@ func BenchmarkEncode(b *testing.B) {
 		panic(err)
 	}
 
-	_, err = typs.Register(reflect.TypeOf(Foo{}))
+	err = typs.Register(reflect.TypeOf(Foo{}))
 
 	if err != nil {
 		b.Fatal(err)
@@ -67,7 +28,15 @@ func BenchmarkEncode(b *testing.B) {
 		Name: "my name is foo",
 		ID:   123,
 		Bar: Bar{
-			Baz: 456,
+			Baz: []Outer{
+				{
+					A: 1,
+					B: 2,
+					C: Inner{
+						D: 3,
+					},
+				},
+			},
 		},
 	}
 
@@ -88,7 +57,7 @@ func BenchmarkDecode(b *testing.B) {
 		panic(err)
 	}
 
-	_, err = typs.Register(reflect.TypeOf(Foo{}))
+	err = typs.Register(reflect.TypeOf(Foo{}))
 
 	if err != nil {
 		b.Fatal(err)
@@ -99,13 +68,22 @@ func BenchmarkDecode(b *testing.B) {
 		Name: "my name is foo",
 		ID:   123,
 		Bar: Bar{
-			Baz: 456,
+			Baz: []Outer{
+				{
+					A: 1,
+					B: 2,
+					C: Inner{
+						D: 3,
+					},
+				},
+			},
 		},
 	}
 
 	bin.Encode(typs, buf, &f)
 
 	var f2 Foo
+	f2.Bar.Baz = make([]Outer, 0, 2)
 	r := fast.NewBinaryBufferReader(buf)
 
 	b.ResetTimer()
@@ -113,5 +91,6 @@ func BenchmarkDecode(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		bin.Decode(typs, &r, &f2)
 		r.Reset()
+		f2.Bar.Baz = f2.Bar.Baz[:0]
 	}
 }

@@ -12,10 +12,11 @@ type Foo struct {
 	Name string
 	ID   int
 	Bar  Bar
+	mjau string
 }
 
 type Bar struct {
-	Baz int
+	Baz []Outer
 }
 
 type Outer struct {
@@ -59,20 +60,27 @@ func main() {
 		panic(err)
 	}
 
-	hash, err := typs.Register(reflect.TypeOf(Foo{}))
+	err = typs.Register(reflect.TypeOf(Foo{}))
 
 	if err != nil {
 		panic(err)
 	}
 
-	log.Println("Hash:", hash)
-
 	b := fast.NewBinaryBuffer(1024)
 	f := Foo{
 		Name: "my name is foo",
 		ID:   123,
+		mjau: "mjau",
 		Bar: Bar{
-			Baz: 456,
+			Baz: []Outer{
+				{
+					A: 1,
+					B: 2,
+					C: Inner{
+						D: 3,
+					},
+				},
+			},
 		},
 	}
 
@@ -84,6 +92,7 @@ func main() {
 	log.Println(b.Bytes())
 
 	var f2 Foo
+	f2.Bar.Baz = make([]Outer, 0, 2)
 	r := fast.NewBinaryBufferReader(b)
 
 	if err = bin.Decode(typs, &r, &f2); err != nil {

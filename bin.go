@@ -26,7 +26,5 @@ func Decode[T any](types *Types, b *fast.BinaryBufferReader, v *T) (err error) {
 		return
 	}
 
-	c.decode(unsafe.Pointer(v), b)
-
-	return
+	return c.decode(unsafe.Pointer(v), b)
 }
