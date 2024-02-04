@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	bin "github.com/webbmaffian/go-binary"
+	"github.com/webbmaffian/go-fast"
 )
 
 type Foo struct {
@@ -14,7 +15,7 @@ type Foo struct {
 }
 
 type Bar struct {
-	Baz []int
+	Baz int
 }
 
 type Outer struct {
@@ -65,4 +66,29 @@ func main() {
 	}
 
 	log.Println("Hash:", hash)
+
+	b := fast.NewBinaryBuffer(1024)
+	f := Foo{
+		Name: "my name is foo",
+		ID:   123,
+		Bar: Bar{
+			Baz: 456,
+		},
+	}
+
+	if err = bin.Encode(typs, b, &f); err != nil {
+		panic(err)
+	}
+
+	log.Println(b.String())
+	log.Println(b.Bytes())
+
+	var f2 Foo
+	r := fast.NewBinaryBufferReader(b)
+
+	if err = bin.Decode(typs, &r, &f2); err != nil {
+		panic(err)
+	}
+
+	log.Printf("%+v\n", f2)
 }

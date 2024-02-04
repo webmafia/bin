@@ -27,6 +27,12 @@ github.com/webbmaffian/go-fast v0.2.0 h1:kHckEb2v1KOQTQNeb2n/LccogCmGVYDLtDhj8dq
 github.com/webbmaffian/go-fast v0.2.0/go.mod h1:2UDBoS2zo6zeyINxRtg0IVoHMPtWCk14k6kJ9uyu8uY=
 github.com/webbmaffian/go-fast v0.3.0 h1:Gl+HvVNjRZrKa/Ky3boOdrTXBIV8MaBoutfSVW4e2BQ=
 github.com/webbmaffian/go-fast v0.3.0/go.mod h1:2UDBoS2zo6zeyINxRtg0IVoHMPtWCk14k6kJ9uyu8uY=
+github.com/webbmaffian/go-fast v0.3.1 h1:FWm9l5dR7D8FTrxaY1VpcOMl0Xx3tL+s5XUuj98gJjo=
+github.com/webbmaffian/go-fast v0.3.1/go.mod h1:2UDBoS2zo6zeyINxRtg0IVoHMPtWCk14k6kJ9uyu8uY=
+github.com/webbmaffian/go-fast v0.3.2 h1:/I0eHUMelsnCqGNSYe3usv906xpivEW9DzsjEOTuxBs=
+github.com/webbmaffian/go-fast v0.3.2/go.mod h1:2UDBoS2zo6zeyINxRtg0IVoHMPtWCk14k6kJ9uyu8uY=
+github.com/webbmaffian/go-fast v0.3.3 h1:8VLuzE6fUhp3b0hbCdmSa1fbMKZ8hjJLCn5tM+9+j5M=
+github.com/webbmaffian/go-fast v0.3.3/go.mod h1:2UDBoS2zo6zeyINxRtg0IVoHMPtWCk14k6kJ9uyu8uY=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=

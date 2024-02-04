@@ -1,11 +1,10 @@
 package bin
 
 import (
+	"errors"
 	"fmt"
 	"hash"
-	"log"
 	"reflect"
-	"sync"
 
 	"github.com/minio/highwayhash"
 )
@@ -14,7 +13,6 @@ type Types struct {
 	types  map[reflect.Type]uint64
 	coders map[uint64]coder
 	hash   hash.Hash64
-	mu     sync.Mutex
 }
 
 func NewTypes(key []byte) (t *Types, err error) {
@@ -33,9 +31,29 @@ func NewTypes(key []byte) (t *Types, err error) {
 	return
 }
 
+func (t *Types) GetCoder(typ reflect.Type) (c coder, err error) {
+	hash, ok := t.types[typ]
+
+	if !ok {
+		err = errors.New("coder not found")
+		return
+	}
+
+	c, ok = t.coders[hash]
+
+	if !ok {
+		err = errors.New("coder not found")
+		return
+	}
+
+	return
+}
+
 func (t *Types) Register(typ reflect.Type) (hash uint64, err error) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
+	if _, ok := t.types[typ]; ok {
+		err = fmt.Errorf("type %v is already registered", typ)
+		return
+	}
 
 	t.hash.Reset()
 
@@ -45,9 +63,15 @@ func (t *Types) Register(typ reflect.Type) (hash uint64, err error) {
 		return
 	}
 
-	log.Printf("%+v\n", c.fields)
+	// log.Printf("%+v\n", c.fields)
 
 	hash = t.hash.Sum64()
+
+	if _, ok := t.coders[hash]; !ok {
+		t.coders[hash] = c
+	}
+
+	t.types[typ] = hash
 
 	return
 }
