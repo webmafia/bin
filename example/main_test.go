@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	bin "github.com/webbmaffian/go-binary"
+	"github.com/webbmaffian/go-bin"
 	"github.com/webbmaffian/go-fast"
 )
 
