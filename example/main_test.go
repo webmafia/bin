@@ -48,6 +48,65 @@ func BenchmarkEncode(b *testing.B) {
 	}
 }
 
+func BenchmarkEncode2(b *testing.B) {
+	var key [32]byte
+
+	type simple struct {
+		A string
+	}
+
+	typs, err := bin.NewTypes(key[:])
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = typs.Register(reflect.TypeOf(simple{}))
+
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	buf := fast.NewBinaryBuffer(1024)
+	s := simple{}
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		bin.Encode(typs, buf, &s)
+		buf.Reset()
+	}
+}
+
+func BenchmarkGetEncoder(b *testing.B) {
+	var key [32]byte
+
+	type simple struct {
+		A string
+	}
+
+	typs, err := bin.NewTypes(key[:])
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = typs.Register(reflect.TypeOf(simple{}))
+
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	// buf := fast.NewBinaryBuffer(1024)
+	s := simple{}
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_, _ = typs.GetCoder(reflect.TypeOf(s))
+	}
+}
+
 func BenchmarkDecode(b *testing.B) {
 	var key [32]byte
 

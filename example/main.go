@@ -26,7 +26,7 @@ type Outer struct {
 }
 
 type Inner struct {
-	D uint64
+	D float64
 }
 
 // func main() {

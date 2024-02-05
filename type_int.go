@@ -6,19 +6,6 @@ import (
 	"github.com/webbmaffian/go-fast"
 )
 
-type boolType struct {
-	offset uintptr
-}
-
-func (f boolType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
-	b.WriteBool(*(*bool)(unsafe.Add(ptr, f.offset)))
-}
-
-func (f boolType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error {
-	*(*bool)(unsafe.Add(ptr, f.offset)) = b.ReadBool()
-	return nil
-}
-
 type intType struct {
 	offset uintptr
 }
@@ -146,31 +133,5 @@ func (f uint64Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 
 func (f uint64Type) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error {
 	*(*uint64)(unsafe.Add(ptr, f.offset)) = b.ReadUint64()
-	return nil
-}
-
-type float32Type struct {
-	offset uintptr
-}
-
-func (f float32Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
-	b.WriteFloat32(*(*float32)(unsafe.Add(ptr, f.offset)))
-}
-
-func (f float32Type) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error {
-	*(*float32)(unsafe.Add(ptr, f.offset)) = b.ReadFloat32()
-	return nil
-}
-
-type float64Type struct {
-	offset uintptr
-}
-
-func (f float64Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
-	b.WriteFloat64(*(*float64)(unsafe.Add(ptr, f.offset)))
-}
-
-func (f float64Type) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error {
-	*(*float64)(unsafe.Add(ptr, f.offset)) = b.ReadFloat64()
 	return nil
 }

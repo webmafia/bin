@@ -60,7 +60,7 @@ func getType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (t Typ
 		return float64Type{offset: offset}, nil
 
 	case reflect.Array:
-		panic("not implemented yet")
+		return getArrayType(typ, offset, hasher)
 
 	case reflect.Slice:
 		return getSliceType(typ, offset, hasher)
