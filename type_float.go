@@ -10,6 +10,10 @@ type float32Type struct {
 	offset uintptr
 }
 
+func (f float32Type) EncodedSize(_ unsafe.Pointer) int {
+	return 4
+}
+
 func (f float32Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	b.WriteFloat32(*(*float32)(unsafe.Add(ptr, f.offset)))
 }
@@ -21,6 +25,10 @@ func (f float32Type) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) erro
 
 type float64Type struct {
 	offset uintptr
+}
+
+func (f float64Type) EncodedSize(_ unsafe.Pointer) int {
+	return 4
 }
 
 func (f float64Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {

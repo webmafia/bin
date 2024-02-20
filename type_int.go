@@ -10,6 +10,10 @@ type intType struct {
 	offset uintptr
 }
 
+func (intType) EncodedSize(_ unsafe.Pointer) int {
+	return 8
+}
+
 func (f intType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	b.WriteInt(*(*int)(unsafe.Add(ptr, f.offset)))
 }
@@ -21,6 +25,10 @@ func (f intType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error {
 
 type int8Type struct {
 	offset uintptr
+}
+
+func (int8Type) EncodedSize(_ unsafe.Pointer) int {
+	return 1
 }
 
 func (f int8Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
@@ -36,6 +44,10 @@ type int16Type struct {
 	offset uintptr
 }
 
+func (int16Type) EncodedSize(_ unsafe.Pointer) int {
+	return 2
+}
+
 func (f int16Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	b.WriteInt16(*(*int16)(unsafe.Add(ptr, f.offset)))
 }
@@ -47,6 +59,10 @@ func (f int16Type) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error 
 
 type int32Type struct {
 	offset uintptr
+}
+
+func (int32Type) EncodedSize(_ unsafe.Pointer) int {
+	return 4
 }
 
 func (f int32Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
@@ -62,6 +78,10 @@ type int64Type struct {
 	offset uintptr
 }
 
+func (int64Type) EncodedSize(_ unsafe.Pointer) int {
+	return 8
+}
+
 func (f int64Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	b.WriteInt64(*(*int64)(unsafe.Add(ptr, f.offset)))
 }
@@ -73,6 +93,10 @@ func (f int64Type) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error 
 
 type uintType struct {
 	offset uintptr
+}
+
+func (uintType) EncodedSize(_ unsafe.Pointer) int {
+	return 8
 }
 
 func (f uintType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
@@ -88,6 +112,10 @@ type uint8Type struct {
 	offset uintptr
 }
 
+func (uint8Type) EncodedSize(_ unsafe.Pointer) int {
+	return 1
+}
+
 func (f uint8Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	b.WriteUint8(*(*uint8)(unsafe.Add(ptr, f.offset)))
 }
@@ -99,6 +127,10 @@ func (f uint8Type) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error 
 
 type uint16Type struct {
 	offset uintptr
+}
+
+func (uint16Type) EncodedSize(_ unsafe.Pointer) int {
+	return 2
 }
 
 func (f uint16Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
@@ -114,6 +146,10 @@ type uint32Type struct {
 	offset uintptr
 }
 
+func (uint32Type) EncodedSize(_ unsafe.Pointer) int {
+	return 4
+}
+
 func (f uint32Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	b.WriteUint32(*(*uint32)(unsafe.Add(ptr, f.offset)))
 }
@@ -125,6 +161,10 @@ func (f uint32Type) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error
 
 type uint64Type struct {
 	offset uintptr
+}
+
+func (uint64Type) EncodedSize(_ unsafe.Pointer) int {
+	return 8
 }
 
 func (f uint64Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {

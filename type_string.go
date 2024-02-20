@@ -10,6 +10,15 @@ type stringType struct {
 	offset uintptr
 }
 
+func (t stringType) EncodedSize(ptr unsafe.Pointer) (s int) {
+	str := *(*string)(unsafe.Add(ptr, t.offset))
+	l := len(str)
+	s += sizeUvarint(uint64(l))
+	s += l
+
+	return
+}
+
 func (f stringType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	str := *(*string)(unsafe.Add(ptr, f.offset))
 	b.WriteUvarint(uint64(len(str)))

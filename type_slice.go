@@ -37,8 +37,19 @@ func getSliceType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (
 	return t, nil
 }
 
+func (t sliceType) EncodedSize(ptr unsafe.Pointer) (s int) {
+	head := t.head(ptr)
+	s += sizeUvarint(uint64(head.len))
+
+	for i := 0; i < head.len; i++ {
+		t.typ.EncodedSize(unsafe.Add(head.data, uintptr(i)*t.typSize))
+	}
+
+	return
+}
+
 func (t sliceType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
-	head := (*sliceHeader)(unsafe.Add(ptr, t.offset))
+	head := t.head(ptr)
 	b.WriteUvarint(uint64(head.len))
 
 	for i := 0; i < head.len; i++ {
@@ -47,7 +58,7 @@ func (t sliceType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 }
 
 func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err error) {
-	head := (*sliceHeader)(unsafe.Add(ptr, t.offset))
+	head := t.head(ptr)
 	calcSize := head.len + int(b.ReadUvarint())
 
 	if calcSize > head.cap {
@@ -61,4 +72,9 @@ func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err e
 	head.len = calcSize
 
 	return
+}
+
+//go:inline
+func (t sliceType) head(ptr unsafe.Pointer) *sliceHeader {
+	return (*sliceHeader)(unsafe.Add(ptr, t.offset))
 }

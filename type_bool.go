@@ -10,6 +10,10 @@ type boolType struct {
 	offset uintptr
 }
 
+func (f boolType) EncodedSize(_ unsafe.Pointer) int {
+	return 1
+}
+
 func (f boolType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	b.WriteBool(*(*bool)(unsafe.Add(ptr, f.offset)))
 }

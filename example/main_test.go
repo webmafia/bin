@@ -48,6 +48,44 @@ func BenchmarkEncode(b *testing.B) {
 	}
 }
 
+func BenchmarkEncodedSize(b *testing.B) {
+	var key [32]byte
+
+	typs, err := bin.NewTypes(key[:])
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = typs.Register(reflect.TypeOf(Foo{}))
+
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	f := Foo{
+		Name: "my name is foo",
+		ID:   123,
+		Bar: Bar{
+			Baz: []Outer{
+				{
+					A: 1,
+					B: 2,
+					C: Inner{
+						D: 3,
+					},
+				},
+			},
+		},
+	}
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_, _ = bin.EncodedSize(typs, &f)
+	}
+}
+
 func BenchmarkEncode2(b *testing.B) {
 	var key [32]byte
 

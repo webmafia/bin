@@ -36,6 +36,14 @@ func getStructType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) 
 	return t, nil
 }
 
+func (c structType) EncodedSize(ptr unsafe.Pointer) (s int) {
+	for i := range c.fields {
+		s += c.fields[i].EncodedSize(ptr)
+	}
+
+	return
+}
+
 func (c structType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	for i := range c.fields {
 		c.fields[i].encode(ptr, b)

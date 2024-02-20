@@ -9,6 +9,8 @@ import (
 )
 
 type Type interface {
+	EncodedSize(ptr unsafe.Pointer) int
+
 	encode(ptr unsafe.Pointer, b *fast.BinaryBuffer)
 	decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err error)
 }
