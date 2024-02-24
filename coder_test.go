@@ -14,17 +14,11 @@ func ExampleCoder() {
 		mjau string
 	}
 
-	var key [32]byte
-
-	c, err := NewCoder(key[:])
-
-	if err != nil {
-		panic(err)
-	}
+	c := NewCoder()
 
 	b := fast.NewBinaryBuffer(1024)
 
-	err = c.Encode(b, &Foo{
+	err := c.Encode(b, &Foo{
 		Name: "mjau",
 	})
 
@@ -45,20 +39,14 @@ func BenchmarkCoder(b *testing.B) {
 		mjau string
 	}
 
-	var key [32]byte
-
-	c, err := NewCoder(key[:])
-
-	if err != nil {
-		b.Fatal(err)
-	}
+	c := NewCoder()
 
 	buf := fast.NewBinaryBuffer(1024)
 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		err = c.Encode(buf, &Foo{
+		err := c.Encode(buf, &Foo{
 			Name: "mjau",
 		})
 
@@ -77,14 +65,7 @@ func BenchmarkCoderParallell(b *testing.B) {
 		mjau string
 	}
 
-	var key [32]byte
-
-	c, err := NewCoder(key[:])
-
-	if err != nil {
-		b.Fatal(err)
-	}
-
+	c := NewCoder()
 	b.ResetTimer()
 
 	b.RunParallel(func(p *testing.PB) {

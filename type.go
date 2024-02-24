@@ -2,6 +2,7 @@ package bin
 
 import (
 	"fmt"
+	"io"
 	"reflect"
 	"unsafe"
 
@@ -10,15 +11,13 @@ import (
 
 type Type interface {
 	encodedSize(ptr unsafe.Pointer) int
-
 	encode(ptr unsafe.Pointer, b *fast.BinaryBuffer)
 	decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err error)
+	typeHash(io.Writer)
 }
 
-func getType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (t Type, err error) {
+func getType(typ reflect.Type, offset uintptr) (t Type, err error) {
 	kind := typ.Kind()
-
-	hasher(kind)
 
 	switch kind {
 
@@ -62,16 +61,16 @@ func getType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (t Typ
 		return float64Type{offset: offset}, nil
 
 	case reflect.Array:
-		return getArrayType(typ, offset, hasher)
+		return getArrayType(typ, offset)
 
 	case reflect.Slice:
-		return getSliceType(typ, offset, hasher)
+		return getSliceType(typ, offset)
 
 	case reflect.String:
 		return stringType{offset: offset}, nil
 
 	case reflect.Struct:
-		return getStructType(typ, offset, hasher)
+		return getStructType(typ, offset)
 
 	default:
 		return nil, fmt.Errorf("unsupported type: %s", kind)

@@ -11,7 +11,7 @@ type structType struct {
 	fields []Type
 }
 
-func getStructType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (Type, error) {
+func getStructType(typ reflect.Type, offset uintptr) (Type, error) {
 	num := typ.NumField()
 	t := structType{
 		fields: make([]Type, 0, num),
@@ -24,7 +24,7 @@ func getStructType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) 
 			continue
 		}
 
-		subtyp, err := getType(f.Type, offset+f.Offset, hasher)
+		subtyp, err := getType(f.Type, offset+f.Offset)
 
 		if err != nil {
 			return nil, err

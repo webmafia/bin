@@ -1,7 +1,2 @@
-github.com/minio/highwayhash v1.0.2 h1:Aak5U0nElisjDCfPSG79Tgzkn2gl66NxOMspRrKnA/g=
-github.com/minio/highwayhash v1.0.2/go.mod h1:BQskDq+xkJ12lmlUUi7U0M5Swg3EWR+dLTk+kldvVxY=
 github.com/webbmaffian/go-fast v0.3.3 h1:8VLuzE6fUhp3b0hbCdmSa1fbMKZ8hjJLCn5tM+9+j5M=
 github.com/webbmaffian/go-fast v0.3.3/go.mod h1:2UDBoS2zo6zeyINxRtg0IVoHMPtWCk14k6kJ9uyu8uY=
-golang.org/x/sys v0.0.0-20190130150945-aca44879d564/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
-golang.org/x/sys v0.2.0 h1:ljd4t30dBnAvMZaQCevtY0xLLD0A+bRZXbgLMLU1F/A=
-golang.org/x/sys v0.2.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=

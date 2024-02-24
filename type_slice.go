@@ -20,9 +20,9 @@ type sliceHeader struct {
 	cap  int
 }
 
-func getSliceType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (Type, error) {
+func getSliceType(typ reflect.Type, offset uintptr) (Type, error) {
 	elem := typ.Elem()
-	subtyp, err := getType(elem, 0, hasher)
+	subtyp, err := getType(elem, 0)
 
 	if err != nil {
 		return nil, err

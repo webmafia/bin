@@ -14,12 +14,9 @@ type arrayType struct {
 	len     int
 }
 
-func getArrayType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (Type, error) {
-	l := typ.Len()
-	hasher(reflect.Kind(l))
-
+func getArrayType(typ reflect.Type, offset uintptr) (Type, error) {
 	elem := typ.Elem()
-	subtyp, err := getType(elem, 0, hasher)
+	subtyp, err := getType(elem, 0)
 
 	if err != nil {
 		return nil, err
@@ -29,7 +26,7 @@ func getArrayType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (
 		typ:     subtyp,
 		typSize: elem.Size(),
 		offset:  offset,
-		len:     l,
+		len:     typ.Len(),
 	}
 
 	return t, nil
