@@ -1,5 +1,7 @@
 package bin
 
+import "unsafe"
+
 func sizeUvarint(x uint64) (l int) {
 	for x >= 0x80 {
 		l++
@@ -11,11 +13,17 @@ func sizeUvarint(x uint64) (l int) {
 	return
 }
 
-func sizeVarint(x int64) int {
-	ux := uint64(x) << 1
-	if x < 0 {
-		ux = ^ux
-	}
+type iface struct {
+	tab  unsafe.Pointer
+	data unsafe.Pointer
+}
 
-	return sizeUvarint(ux)
+//go:inline
+func toIface(v any) iface {
+	return *(*iface)(unsafe.Pointer(&v))
+}
+
+//go:inline
+func fromIface(v iface) any {
+	return *(*any)(unsafe.Pointer(&v))
 }
