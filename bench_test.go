@@ -95,3 +95,31 @@ func ExampleIface() {
 
 	// Output: Mjau
 }
+
+func BenchmarkReflectElem(b *testing.B) {
+	type Foo struct {
+		Foobar string
+	}
+
+	var f Foo
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_ = reflect.TypeOf(&f).Elem()
+	}
+}
+
+func BenchmarkReflectKind(b *testing.B) {
+	type Foo struct {
+		Foobar string
+	}
+
+	var f Foo
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_ = reflect.TypeOf(&f).Kind()
+	}
+}

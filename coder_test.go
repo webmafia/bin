@@ -7,7 +7,7 @@ import (
 	"github.com/webbmaffian/go-fast"
 )
 
-func ExampleAtomicTypes() {
+func ExampleCoder() {
 	type Foo struct {
 		Name string
 		ID   int
@@ -15,33 +15,20 @@ func ExampleAtomicTypes() {
 	}
 
 	var key [32]byte
-	typs, err := NewAtomicTypes(key[:])
+
+	c, err := NewCoder(key[:])
 
 	if err != nil {
 		panic(err)
 	}
 
-	// c, err := typs.GetCoder(Foo{})
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-
 	b := fast.NewBinaryBuffer(1024)
 
-	if err = Encode2(typs, b, &Foo{
+	err = c.Encode(b, &Foo{
 		Name: "mjau",
-	}); err != nil {
-		panic(err)
-	}
+	})
 
-	fmt.Println(b.String())
-	fmt.Println(b.Bytes())
-	b.Reset()
-
-	if err = Encode2(typs, b, &Foo{
-		Name: "mjau2",
-	}); err != nil {
+	if err != nil {
 		panic(err)
 	}
 
@@ -51,7 +38,7 @@ func ExampleAtomicTypes() {
 	// Output: Unknown
 }
 
-func BenchmarkAtomicTypes(b *testing.B) {
+func BenchmarkCoder(b *testing.B) {
 	type Foo struct {
 		Name string
 		ID   int
@@ -59,21 +46,31 @@ func BenchmarkAtomicTypes(b *testing.B) {
 	}
 
 	var key [32]byte
-	typs, err := NewAtomicTypes(key[:])
+
+	c, err := NewCoder(key[:])
 
 	if err != nil {
 		b.Fatal(err)
 	}
 
+	buf := fast.NewBinaryBuffer(1024)
+
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		c, err := typs.GetCoder(&Foo{})
-		_, _ = c, err
+		err = c.Encode(buf, &Foo{
+			Name: "mjau",
+		})
+
+		if err != nil {
+			b.Fatal(err)
+		}
+
+		buf.Reset()
 	}
 }
 
-func BenchmarkAtomicTypesParallell(b *testing.B) {
+func BenchmarkCoderParallell(b *testing.B) {
 	type Foo struct {
 		Name string
 		ID   int
@@ -81,7 +78,8 @@ func BenchmarkAtomicTypesParallell(b *testing.B) {
 	}
 
 	var key [32]byte
-	typs, err := NewAtomicTypes(key[:])
+
+	c, err := NewCoder(key[:])
 
 	if err != nil {
 		b.Fatal(err)
@@ -90,12 +88,18 @@ func BenchmarkAtomicTypesParallell(b *testing.B) {
 	b.ResetTimer()
 
 	b.RunParallel(func(p *testing.PB) {
+		buf := fast.NewBinaryBuffer(1024)
+
 		for p.Next() {
-			c, err := typs.GetCoder(&Foo{})
+			err := c.Encode(buf, &Foo{
+				Name: "mjau",
+			})
+
 			if err != nil {
 				b.Fatal(err)
 			}
-			_, _ = c, err
+
+			buf.Reset()
 		}
 	})
 }
