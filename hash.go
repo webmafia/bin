@@ -86,3 +86,17 @@ func (t structType) typeHash(w io.Writer) {
 		t.fields[i].typeHash(w)
 	}
 }
+
+func (r raw) typeHash(w io.Writer) {
+	w.Write([]byte{
+		byte(reflect.Struct),
+		byte(r.size),
+		byte(r.size >> 8),
+		byte(r.size >> 16),
+		byte(r.size >> 24),
+		byte(r.size >> 32),
+		byte(r.size >> 40),
+		byte(r.size >> 48),
+		byte(r.size >> 56),
+	})
+}
