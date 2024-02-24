@@ -35,9 +35,9 @@ func getArrayType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (
 	return t, nil
 }
 
-func (t arrayType) EncodedSize(ptr unsafe.Pointer) (s int) {
+func (t arrayType) encodedSize(ptr unsafe.Pointer) (s int) {
 	for i := 0; i < t.len; i++ {
-		s += t.typ.EncodedSize(unsafe.Add(ptr, t.offset+uintptr(i)*t.typSize))
+		s += t.typ.encodedSize(unsafe.Add(ptr, t.offset+uintptr(i)*t.typSize))
 	}
 
 	return

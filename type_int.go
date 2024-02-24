@@ -10,7 +10,7 @@ type intType struct {
 	offset uintptr
 }
 
-func (intType) EncodedSize(_ unsafe.Pointer) int {
+func (intType) encodedSize(_ unsafe.Pointer) int {
 	return 8
 }
 
@@ -27,7 +27,7 @@ type int8Type struct {
 	offset uintptr
 }
 
-func (int8Type) EncodedSize(_ unsafe.Pointer) int {
+func (int8Type) encodedSize(_ unsafe.Pointer) int {
 	return 1
 }
 
@@ -44,7 +44,7 @@ type int16Type struct {
 	offset uintptr
 }
 
-func (int16Type) EncodedSize(_ unsafe.Pointer) int {
+func (int16Type) encodedSize(_ unsafe.Pointer) int {
 	return 2
 }
 
@@ -61,7 +61,7 @@ type int32Type struct {
 	offset uintptr
 }
 
-func (int32Type) EncodedSize(_ unsafe.Pointer) int {
+func (int32Type) encodedSize(_ unsafe.Pointer) int {
 	return 4
 }
 
@@ -78,7 +78,7 @@ type int64Type struct {
 	offset uintptr
 }
 
-func (int64Type) EncodedSize(_ unsafe.Pointer) int {
+func (int64Type) encodedSize(_ unsafe.Pointer) int {
 	return 8
 }
 
@@ -95,7 +95,7 @@ type uintType struct {
 	offset uintptr
 }
 
-func (uintType) EncodedSize(_ unsafe.Pointer) int {
+func (uintType) encodedSize(_ unsafe.Pointer) int {
 	return 8
 }
 
@@ -112,7 +112,7 @@ type uint8Type struct {
 	offset uintptr
 }
 
-func (uint8Type) EncodedSize(_ unsafe.Pointer) int {
+func (uint8Type) encodedSize(_ unsafe.Pointer) int {
 	return 1
 }
 
@@ -129,7 +129,7 @@ type uint16Type struct {
 	offset uintptr
 }
 
-func (uint16Type) EncodedSize(_ unsafe.Pointer) int {
+func (uint16Type) encodedSize(_ unsafe.Pointer) int {
 	return 2
 }
 
@@ -146,7 +146,7 @@ type uint32Type struct {
 	offset uintptr
 }
 
-func (uint32Type) EncodedSize(_ unsafe.Pointer) int {
+func (uint32Type) encodedSize(_ unsafe.Pointer) int {
 	return 4
 }
 
@@ -163,7 +163,7 @@ type uint64Type struct {
 	offset uintptr
 }
 
-func (uint64Type) EncodedSize(_ unsafe.Pointer) int {
+func (uint64Type) encodedSize(_ unsafe.Pointer) int {
 	return 8
 }
 

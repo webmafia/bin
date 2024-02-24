@@ -10,7 +10,7 @@ type float32Type struct {
 	offset uintptr
 }
 
-func (f float32Type) EncodedSize(_ unsafe.Pointer) int {
+func (f float32Type) encodedSize(_ unsafe.Pointer) int {
 	return 4
 }
 
@@ -27,7 +27,7 @@ type float64Type struct {
 	offset uintptr
 }
 
-func (f float64Type) EncodedSize(_ unsafe.Pointer) int {
+func (f float64Type) encodedSize(_ unsafe.Pointer) int {
 	return 4
 }
 

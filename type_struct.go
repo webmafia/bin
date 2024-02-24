@@ -36,9 +36,9 @@ func getStructType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) 
 	return t, nil
 }
 
-func (c structType) EncodedSize(ptr unsafe.Pointer) (s int) {
+func (c structType) encodedSize(ptr unsafe.Pointer) (s int) {
 	for i := range c.fields {
-		s += c.fields[i].EncodedSize(ptr)
+		s += c.fields[i].encodedSize(ptr)
 	}
 
 	return

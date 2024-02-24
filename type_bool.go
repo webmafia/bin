@@ -10,7 +10,7 @@ type boolType struct {
 	offset uintptr
 }
 
-func (f boolType) EncodedSize(_ unsafe.Pointer) int {
+func (f boolType) encodedSize(_ unsafe.Pointer) int {
 	return 1
 }
 

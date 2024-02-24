@@ -10,7 +10,7 @@ type stringType struct {
 	offset uintptr
 }
 
-func (t stringType) EncodedSize(ptr unsafe.Pointer) (s int) {
+func (t stringType) encodedSize(ptr unsafe.Pointer) (s int) {
 	str := *(*string)(unsafe.Add(ptr, t.offset))
 	l := len(str)
 	s += sizeUvarint(uint64(l))

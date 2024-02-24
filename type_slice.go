@@ -37,12 +37,12 @@ func getSliceType(typ reflect.Type, offset uintptr, hasher func(reflect.Kind)) (
 	return t, nil
 }
 
-func (t sliceType) EncodedSize(ptr unsafe.Pointer) (s int) {
+func (t sliceType) encodedSize(ptr unsafe.Pointer) (s int) {
 	head := t.head(ptr)
 	s += sizeUvarint(uint64(head.len))
 
 	for i := 0; i < head.len; i++ {
-		t.typ.EncodedSize(unsafe.Add(head.data, uintptr(i)*t.typSize))
+		t.typ.encodedSize(unsafe.Add(head.data, uintptr(i)*t.typSize))
 	}
 
 	return
