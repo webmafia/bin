@@ -24,7 +24,7 @@ func (r raw) bytes(ptr unsafe.Pointer) []byte {
 }
 
 // decode implements Type.
-func (r raw) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err error) {
+func (r raw) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, _ bool) (err error) {
 	_, err = b.Read(r.bytes(ptr))
 	return
 }

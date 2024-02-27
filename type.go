@@ -12,7 +12,7 @@ import (
 type Type interface {
 	encodedSize(ptr unsafe.Pointer) int
 	encode(ptr unsafe.Pointer, b *fast.BinaryBuffer)
-	decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err error)
+	decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error)
 	typeHash(io.Writer)
 }
 

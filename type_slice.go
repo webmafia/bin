@@ -57,7 +57,7 @@ func (t sliceType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	}
 }
 
-func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err error) {
+func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error) {
 	head := t.head(ptr)
 	calcSize := head.len + int(b.ReadUvarint())
 
@@ -66,7 +66,7 @@ func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err e
 	}
 
 	for i := head.len; i < calcSize; i++ {
-		t.typ.decode(unsafe.Add(head.data, uintptr(i)*t.typSize), b)
+		t.typ.decode(unsafe.Add(head.data, uintptr(i)*t.typSize), b, nocopy)
 	}
 
 	head.len = calcSize

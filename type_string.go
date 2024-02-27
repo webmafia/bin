@@ -25,8 +25,14 @@ func (f stringType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	b.WriteString(str)
 }
 
-func (f stringType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) error {
+func (f stringType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) error {
 	n := b.ReadUvarint()
-	*(*string)(unsafe.Add(ptr, f.offset)) = b.ReadString(int(n))
+
+	if nocopy {
+		*(*string)(unsafe.Add(ptr, f.offset)) = b.ReadString(int(n))
+	} else {
+		*(*string)(unsafe.Add(ptr, f.offset)) = string(b.ReadBytes(int(n)))
+	}
+
 	return nil
 }

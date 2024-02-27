@@ -50,9 +50,9 @@ func (c structType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	}
 }
 
-func (c structType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err error) {
+func (c structType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error) {
 	for i := range c.fields {
-		if err = c.fields[i].decode(ptr, b); err != nil {
+		if err = c.fields[i].decode(ptr, b, nocopy); err != nil {
 			return
 		}
 	}

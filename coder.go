@@ -37,7 +37,7 @@ func (c *Coder) Encode(b *fast.BinaryBuffer, v any) (err error) {
 	return
 }
 
-func (c *Coder) Decode(b *fast.BinaryBufferReader, v any) (err error) {
+func (c *Coder) Decode(b *fast.BinaryBufferReader, v any, nocopy ...bool) (err error) {
 	typ := reflect.TypeOf(v)
 
 	if typ.Kind() != reflect.Pointer {
@@ -51,7 +51,7 @@ func (c *Coder) Decode(b *fast.BinaryBufferReader, v any) (err error) {
 		return
 	}
 
-	t.decode(ifs.data, b)
+	t.decode(ifs.data, b, len(nocopy) > 0 && nocopy[0])
 
 	return
 }

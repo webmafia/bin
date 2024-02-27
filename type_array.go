@@ -46,9 +46,9 @@ func (t arrayType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
 	}
 }
 
-func (t arrayType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader) (err error) {
+func (t arrayType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error) {
 	for i := 0; i < t.len; i++ {
-		t.typ.decode(unsafe.Add(ptr, t.offset+uintptr(i)*t.typSize), b)
+		t.typ.decode(unsafe.Add(ptr, t.offset+uintptr(i)*t.typSize), b, nocopy)
 	}
 
 	return

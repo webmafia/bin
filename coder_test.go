@@ -32,7 +32,7 @@ func ExampleCoder() {
 	// Output: Unknown
 }
 
-func BenchmarkCoder(b *testing.B) {
+func BenchmarkCoderEncode(b *testing.B) {
 	type Foo struct {
 		Name string
 		ID   int
@@ -55,6 +55,78 @@ func BenchmarkCoder(b *testing.B) {
 		}
 
 		buf.Reset()
+	}
+}
+
+func BenchmarkCoderDecode(b *testing.B) {
+	type Foo struct {
+		Name string
+		ID   int
+		mjau string
+	}
+
+	c := NewCoder()
+
+	buf := fast.NewBinaryBuffer(1024)
+
+	err := c.Encode(buf, &Foo{
+		Name: "mjau",
+	})
+
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	r := fast.NewBinaryBufferReader(buf)
+
+	var f Foo
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		err = c.Decode(&r, &f)
+
+		if err != nil {
+			b.Fatal(err)
+		}
+
+		r.Reset()
+	}
+}
+
+func BenchmarkCoderDecodeNocopy(b *testing.B) {
+	type Foo struct {
+		Name string
+		ID   int
+		mjau string
+	}
+
+	c := NewCoder()
+
+	buf := fast.NewBinaryBuffer(1024)
+
+	err := c.Encode(buf, &Foo{
+		Name: "mjau",
+	})
+
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	r := fast.NewBinaryBufferReader(buf)
+
+	var f Foo
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		err = c.Decode(&r, &f, true)
+
+		if err != nil {
+			b.Fatal(err)
+		}
+
+		r.Reset()
 	}
 }
 
@@ -81,6 +153,78 @@ func BenchmarkCoderParallell(b *testing.B) {
 			}
 
 			buf.Reset()
+		}
+	})
+}
+
+func BenchmarkCoderParallellDecode(b *testing.B) {
+	type Foo struct {
+		Name string
+		ID   int
+		mjau string
+	}
+
+	c := NewCoder()
+	buf := fast.NewBinaryBuffer(1024)
+
+	err := c.Encode(buf, &Foo{
+		Name: "mjau",
+	})
+
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+
+	b.RunParallel(func(p *testing.PB) {
+		r := fast.NewBinaryBufferReader(buf)
+		var f Foo
+
+		for p.Next() {
+			err := c.Decode(&r, &f)
+
+			if err != nil {
+				b.Fatal(err)
+			}
+
+			r.Reset()
+		}
+	})
+}
+
+func BenchmarkCoderParallellDecodeNocopy(b *testing.B) {
+	type Foo struct {
+		Name string
+		ID   int
+		mjau string
+	}
+
+	c := NewCoder()
+	buf := fast.NewBinaryBuffer(1024)
+
+	err := c.Encode(buf, &Foo{
+		Name: "mjau",
+	})
+
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+
+	b.RunParallel(func(p *testing.PB) {
+		r := fast.NewBinaryBufferReader(buf)
+		var f Foo
+
+		for p.Next() {
+			err := c.Decode(&r, &f, true)
+
+			if err != nil {
+				b.Fatal(err)
+			}
+
+			r.Reset()
 		}
 	})
 }
