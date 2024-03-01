@@ -1,4 +1,4 @@
-module github.com/webbmaffian/go-bin
+module github.com/webmafia/bin
 
 go 1.21.3
 
