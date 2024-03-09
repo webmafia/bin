@@ -3,7 +3,7 @@ package bin
 import (
 	"unsafe"
 
-	fast "github.com/webbmaffian/go-fast"
+	fast "github.com/webmafia/fast"
 )
 
 var _ Type = raw{}

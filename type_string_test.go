@@ -4,7 +4,7 @@ import (
 	"testing"
 	"unsafe"
 
-	"github.com/webbmaffian/go-fast"
+	"github.com/webmafia/fast"
 )
 
 func BenchmarkEncode_String(b *testing.B) {

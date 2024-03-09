@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/webbmaffian/go-fast"
+	"github.com/webmafia/fast"
 )
 
 type Type interface {

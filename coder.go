@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"unsafe"
 
-	"github.com/webbmaffian/go-fast"
+	"github.com/webmafia/fast"
 )
 
 type Coder struct {

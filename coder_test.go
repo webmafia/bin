@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/webbmaffian/go-fast"
+	"github.com/webmafia/fast"
 )
 
 func ExampleCoder() {
