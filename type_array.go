@@ -14,9 +14,9 @@ type arrayType struct {
 	len     int
 }
 
-func getArrayType(typ reflect.Type, offset uintptr) (Type, error) {
+func getArrayType(typ reflect.Type, offset uintptr, allowAllocations bool) (Type, error) {
 	elem := typ.Elem()
-	subtyp, err := getType(elem, 0)
+	subtyp, err := getType(elem, 0, allowAllocations)
 
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (t arrayType) encodedSize(ptr unsafe.Pointer) (s int) {
 	return
 }
 
-func (t arrayType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (t arrayType) encode(ptr unsafe.Pointer, b fast.Writer) {
 	for i := 0; i < t.len; i++ {
 		t.typ.encode(unsafe.Add(ptr, t.offset+uintptr(i)*t.typSize), b)
 	}

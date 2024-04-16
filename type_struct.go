@@ -11,7 +11,7 @@ type structType struct {
 	fields []Type
 }
 
-func getStructType(typ reflect.Type, offset uintptr) (Type, error) {
+func getStructType(typ reflect.Type, offset uintptr, allowAllocations bool) (Type, error) {
 	num := typ.NumField()
 	t := structType{
 		fields: make([]Type, 0, num),
@@ -24,7 +24,7 @@ func getStructType(typ reflect.Type, offset uintptr) (Type, error) {
 			continue
 		}
 
-		subtyp, err := getType(f.Type, offset+f.Offset)
+		subtyp, err := getType(f.Type, offset+f.Offset, allowAllocations)
 
 		if err != nil {
 			return nil, err
@@ -44,7 +44,7 @@ func (c structType) encodedSize(ptr unsafe.Pointer) (s int) {
 	return
 }
 
-func (c structType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (c structType) encode(ptr unsafe.Pointer, b fast.Writer) {
 	for i := range c.fields {
 		c.fields[i].encode(ptr, b)
 	}

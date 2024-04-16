@@ -14,7 +14,7 @@ func (intType) encodedSize(_ unsafe.Pointer) int {
 	return 8
 }
 
-func (f intType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f intType) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteInt(*(*int)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -31,7 +31,7 @@ func (int8Type) encodedSize(_ unsafe.Pointer) int {
 	return 1
 }
 
-func (f int8Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f int8Type) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteInt8(*(*int8)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -48,7 +48,7 @@ func (int16Type) encodedSize(_ unsafe.Pointer) int {
 	return 2
 }
 
-func (f int16Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f int16Type) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteInt16(*(*int16)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -65,7 +65,7 @@ func (int32Type) encodedSize(_ unsafe.Pointer) int {
 	return 4
 }
 
-func (f int32Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f int32Type) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteInt32(*(*int32)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -82,7 +82,7 @@ func (int64Type) encodedSize(_ unsafe.Pointer) int {
 	return 8
 }
 
-func (f int64Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f int64Type) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteInt64(*(*int64)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -99,7 +99,7 @@ func (uintType) encodedSize(_ unsafe.Pointer) int {
 	return 8
 }
 
-func (f uintType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f uintType) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteUint(*(*uint)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -116,7 +116,7 @@ func (uint8Type) encodedSize(_ unsafe.Pointer) int {
 	return 1
 }
 
-func (f uint8Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f uint8Type) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteUint8(*(*uint8)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -133,7 +133,7 @@ func (uint16Type) encodedSize(_ unsafe.Pointer) int {
 	return 2
 }
 
-func (f uint16Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f uint16Type) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteUint16(*(*uint16)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -150,7 +150,7 @@ func (uint32Type) encodedSize(_ unsafe.Pointer) int {
 	return 4
 }
 
-func (f uint32Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f uint32Type) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteUint32(*(*uint32)(unsafe.Add(ptr, f.offset)))
 }
 
@@ -167,7 +167,7 @@ func (uint64Type) encodedSize(_ unsafe.Pointer) int {
 	return 8
 }
 
-func (f uint64Type) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f uint64Type) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteUint64(*(*uint64)(unsafe.Add(ptr, f.offset)))
 }
 

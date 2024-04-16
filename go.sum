@@ -2,3 +2,5 @@ github.com/webmafia/fast v0.3.3 h1:8VLuzE6fUhp3b0hbCdmSa1fbMKZ8hjJLCn5tM+9+j5M=
 github.com/webmafia/fast v0.3.3/go.mod h1:2UDBoS2zo6zeyINxRtg0IVoHMPtWCk14k6kJ9uyu8uY=
 github.com/webmafia/fast v0.5.0 h1:7gGya8XQ7oUPX0ngc+MRUFRQv2KAJeTnWyrGZb3pQ1o=
 github.com/webmafia/fast v0.5.0/go.mod h1:huJN6MVve9MkiXpAzyuyd0UGhTXt3B/lukYR2/Zu0/Q=
+github.com/webmafia/fast v0.7.0 h1:mURl9L2AK5GLZw/r3ScR06AalnFaOIvLly7XV/ZQzDM=
+github.com/webmafia/fast v0.7.0/go.mod h1:huJN6MVve9MkiXpAzyuyd0UGhTXt3B/lukYR2/Zu0/Q=

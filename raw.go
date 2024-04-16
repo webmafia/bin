@@ -30,7 +30,7 @@ func (r raw) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, _ bool) (err
 }
 
 // encode implements Type.
-func (r raw) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (r raw) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.Write(r.bytes(ptr))
 }
 

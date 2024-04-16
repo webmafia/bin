@@ -9,9 +9,10 @@ import (
 )
 
 type sliceType struct {
-	typ     Type
-	typSize uintptr
-	offset  uintptr
+	typ              Type
+	typSize          uintptr
+	offset           uintptr
+	allowAllocations bool
 }
 
 type sliceHeader struct {
@@ -20,18 +21,19 @@ type sliceHeader struct {
 	cap  int
 }
 
-func getSliceType(typ reflect.Type, offset uintptr) (Type, error) {
+func getSliceType(typ reflect.Type, offset uintptr, allowAllocations bool) (Type, error) {
 	elem := typ.Elem()
-	subtyp, err := getType(elem, 0)
+	subtyp, err := getType(elem, 0, allowAllocations)
 
 	if err != nil {
 		return nil, err
 	}
 
 	t := sliceType{
-		typ:     subtyp,
-		typSize: elem.Size(),
-		offset:  offset,
+		typ:              subtyp,
+		typSize:          elem.Size(),
+		offset:           offset,
+		allowAllocations: allowAllocations,
 	}
 
 	return t, nil
@@ -48,7 +50,7 @@ func (t sliceType) encodedSize(ptr unsafe.Pointer) (s int) {
 	return
 }
 
-func (t sliceType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (t sliceType) encode(ptr unsafe.Pointer, b fast.Writer) {
 	head := t.head(ptr)
 	b.WriteUvarint(uint64(head.len))
 
@@ -62,7 +64,22 @@ func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy
 	calcSize := head.len + int(b.ReadUvarint())
 
 	if calcSize > head.cap {
-		return errors.New("not enough capacity in slice")
+		if !t.allowAllocations {
+			return errors.New("not enough capacity in slice")
+		}
+
+		oldBytes := *(*[]byte)(unsafe.Pointer(&sliceHeader{
+			data: head.data,
+			len:  head.len * int(t.typSize),
+			cap:  head.len * int(t.typSize),
+		}))
+
+		newBytes := fast.MakeNoZero(calcSize * int(t.typSize))
+		copy(newBytes, oldBytes)
+
+		newBytesHead := (*sliceHeader)(unsafe.Pointer(&newBytes))
+		head.data = newBytesHead.data
+		head.cap = calcSize
 	}
 
 	for i := head.len; i < calcSize; i++ {

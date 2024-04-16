@@ -14,7 +14,7 @@ func (f boolType) encodedSize(_ unsafe.Pointer) int {
 	return 1
 }
 
-func (f boolType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f boolType) encode(ptr unsafe.Pointer, b fast.Writer) {
 	b.WriteBool(*(*bool)(unsafe.Add(ptr, f.offset)))
 }
 

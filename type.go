@@ -11,12 +11,12 @@ import (
 
 type Type interface {
 	encodedSize(ptr unsafe.Pointer) int
-	encode(ptr unsafe.Pointer, b *fast.BinaryBuffer)
+	encode(ptr unsafe.Pointer, b fast.Writer)
 	decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error)
 	typeHash(io.Writer)
 }
 
-func getType(typ reflect.Type, offset uintptr) (t Type, err error) {
+func getType(typ reflect.Type, offset uintptr, allowAllocations bool) (t Type, err error) {
 	kind := typ.Kind()
 
 	switch kind {
@@ -61,16 +61,16 @@ func getType(typ reflect.Type, offset uintptr) (t Type, err error) {
 		return float64Type{offset: offset}, nil
 
 	case reflect.Array:
-		return getArrayType(typ, offset)
+		return getArrayType(typ, offset, allowAllocations)
 
 	case reflect.Slice:
-		return getSliceType(typ, offset)
+		return getSliceType(typ, offset, allowAllocations)
 
 	case reflect.String:
 		return stringType{offset: offset}, nil
 
 	case reflect.Struct:
-		return getStructType(typ, offset)
+		return getStructType(typ, offset, allowAllocations)
 
 	default:
 		return nil, fmt.Errorf("unsupported type: %s", kind)

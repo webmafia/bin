@@ -19,7 +19,7 @@ func (t stringType) encodedSize(ptr unsafe.Pointer) (s int) {
 	return
 }
 
-func (f stringType) encode(ptr unsafe.Pointer, b *fast.BinaryBuffer) {
+func (f stringType) encode(ptr unsafe.Pointer, b fast.Writer) {
 	str := *(*string)(unsafe.Add(ptr, f.offset))
 	b.WriteUvarint(uint64(len(str)))
 	b.WriteString(str)

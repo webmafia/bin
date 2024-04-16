@@ -12,13 +12,24 @@ import (
 
 type Coder struct {
 	items [64]unsafe.Pointer
+	opt   CoderOptions
 }
 
-func NewCoder() *Coder {
-	return new(Coder)
+type CoderOptions struct {
+	AllowAllocations bool
 }
 
-func (c *Coder) Encode(b *fast.BinaryBuffer, v any) (err error) {
+func NewCoder(opt ...CoderOptions) *Coder {
+	c := &Coder{}
+
+	if len(opt) > 0 {
+		c.opt = opt[0]
+	}
+
+	return c
+}
+
+func (c *Coder) Encode(b fast.Writer, v any) (err error) {
 	typ := reflect.TypeOf(v)
 
 	if typ.Kind() != reflect.Pointer {
@@ -51,9 +62,7 @@ func (c *Coder) Decode(b *fast.BinaryBufferReader, v any, nocopy ...bool) (err e
 		return
 	}
 
-	t.decode(ifs.data, b, len(nocopy) > 0 && nocopy[0])
-
-	return
+	return t.decode(ifs.data, b, len(nocopy) > 0 && nocopy[0])
 }
 
 func (c *Coder) TypeHash(h hash.Hash, v any) (err error) {
@@ -93,7 +102,7 @@ func (c *Coder) getType(tab uintptr, typ reflect.Type) (t Type, err error) {
 	}
 
 	// If we came here, no coder exists - create one
-	t, err = getType(typ, 0)
+	t, err = getType(typ, 0, c.opt.AllowAllocations)
 
 	if err != nil {
 		return
