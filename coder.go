@@ -16,7 +16,8 @@ type Coder struct {
 }
 
 type CoderOptions struct {
-	AllowAllocations bool
+	AllowAllocations     bool
+	KeepUnexportedFields bool
 }
 
 func NewCoder(opt ...CoderOptions) *Coder {
@@ -102,7 +103,7 @@ func (c *Coder) getType(tab uintptr, typ reflect.Type) (t Type, err error) {
 	}
 
 	// If we came here, no coder exists - create one
-	t, err = getType(typ, 0, c.opt.AllowAllocations)
+	t, err = getType(typ, 0, &c.opt)
 
 	if err != nil {
 		return

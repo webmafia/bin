@@ -14,9 +14,9 @@ type arrayType struct {
 	len     int
 }
 
-func getArrayType(typ reflect.Type, offset uintptr, allowAllocations bool) (Type, error) {
+func getArrayType(typ reflect.Type, offset uintptr, opt *CoderOptions) (Type, error) {
 	elem := typ.Elem()
-	subtyp, err := getType(elem, 0, allowAllocations)
+	subtyp, err := getType(elem, 0, opt)
 
 	if err != nil {
 		return nil, err

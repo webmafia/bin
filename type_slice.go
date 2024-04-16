@@ -21,9 +21,9 @@ type sliceHeader struct {
 	cap  int
 }
 
-func getSliceType(typ reflect.Type, offset uintptr, allowAllocations bool) (Type, error) {
+func getSliceType(typ reflect.Type, offset uintptr, opt *CoderOptions) (Type, error) {
 	elem := typ.Elem()
-	subtyp, err := getType(elem, 0, allowAllocations)
+	subtyp, err := getType(elem, 0, opt)
 
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func getSliceType(typ reflect.Type, offset uintptr, allowAllocations bool) (Type
 		typ:              subtyp,
 		typSize:          elem.Size(),
 		offset:           offset,
-		allowAllocations: allowAllocations,
+		allowAllocations: opt.AllowAllocations,
 	}
 
 	return t, nil

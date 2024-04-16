@@ -11,7 +11,7 @@ type structType struct {
 	fields []Type
 }
 
-func getStructType(typ reflect.Type, offset uintptr, allowAllocations bool) (Type, error) {
+func getStructType(typ reflect.Type, offset uintptr, opt *CoderOptions) (Type, error) {
 	num := typ.NumField()
 	t := structType{
 		fields: make([]Type, 0, num),
@@ -20,11 +20,11 @@ func getStructType(typ reflect.Type, offset uintptr, allowAllocations bool) (Typ
 	for i := 0; i < num; i++ {
 		f := typ.Field(i)
 
-		if !f.IsExported() {
+		if !opt.KeepUnexportedFields && !f.IsExported() {
 			continue
 		}
 
-		subtyp, err := getType(f.Type, offset+f.Offset, allowAllocations)
+		subtyp, err := getType(f.Type, offset+f.Offset, opt)
 
 		if err != nil {
 			return nil, err

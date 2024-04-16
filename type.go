@@ -16,7 +16,7 @@ type Type interface {
 	typeHash(io.Writer)
 }
 
-func getType(typ reflect.Type, offset uintptr, allowAllocations bool) (t Type, err error) {
+func getType(typ reflect.Type, offset uintptr, opt *CoderOptions) (t Type, err error) {
 	kind := typ.Kind()
 
 	switch kind {
@@ -61,16 +61,16 @@ func getType(typ reflect.Type, offset uintptr, allowAllocations bool) (t Type, e
 		return float64Type{offset: offset}, nil
 
 	case reflect.Array:
-		return getArrayType(typ, offset, allowAllocations)
+		return getArrayType(typ, offset, opt)
 
 	case reflect.Slice:
-		return getSliceType(typ, offset, allowAllocations)
+		return getSliceType(typ, offset, opt)
 
 	case reflect.String:
 		return stringType{offset: offset}, nil
 
 	case reflect.Struct:
-		return getStructType(typ, offset, allowAllocations)
+		return getStructType(typ, offset, opt)
 
 	default:
 		return nil, fmt.Errorf("unsupported type: %s", kind)
