@@ -108,7 +108,7 @@ func BenchmarkCoderDecode(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		err = c.Decode(&r, &f)
+		err = c.Decode(r, &f)
 
 		if err != nil {
 			b.Fatal(err)
@@ -144,7 +144,7 @@ func BenchmarkCoderDecodeNocopy(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		err = c.Decode(&r, &f, true)
+		err = c.Decode(r, &f, true)
 
 		if err != nil {
 			b.Fatal(err)
@@ -206,7 +206,7 @@ func BenchmarkCoderParallellDecode(b *testing.B) {
 		var f Foo
 
 		for p.Next() {
-			err := c.Decode(&r, &f)
+			err := c.Decode(r, &f)
 
 			if err != nil {
 				b.Fatal(err)
@@ -242,7 +242,7 @@ func BenchmarkCoderParallellDecodeNocopy(b *testing.B) {
 		var f Foo
 
 		for p.Next() {
-			err := c.Decode(&r, &f, true)
+			err := c.Decode(r, &f, true)
 
 			if err != nil {
 				b.Fatal(err)

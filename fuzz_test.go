@@ -43,7 +43,7 @@ func testEncoder(src *bigStruct, rand *rand.Rand, maxSlice int) (err error) {
 	var dst bigStruct
 	r := binary.NewBufferReader(buf.Bytes())
 
-	if err = c.Decode(&r, &dst); err != nil {
+	if err = c.Decode(r, &dst); err != nil {
 		return
 	}
 
@@ -56,6 +56,7 @@ type bigStruct struct {
 
 type bigStructItem struct {
 	bigSlice    []string
+	integer     uint16
 	nestedSlice [][][]int
 }
 
@@ -73,6 +74,10 @@ func (a *bigStruct) compare(b *bigStruct) (err error) {
 			if a.items[i].bigSlice[j] != b.items[i].bigSlice[j] {
 				return fmt.Errorf("items.%d.bigSlice.%d string mismatch; '%s' vs '%s'", i, j, a.items[i].bigSlice[j], b.items[i].bigSlice[j])
 			}
+		}
+
+		if a.items[i].integer != b.items[i].integer {
+			return fmt.Errorf("items.%d.integer integer mismatch; %d vs %d", i, a.items[i].integer, b.items[i].integer)
 		}
 
 		if len(a.items[i].nestedSlice) != len(b.items[i].nestedSlice) {
@@ -112,6 +117,8 @@ func generateStruct(v *bigStruct, rand *rand.Rand, maxSlice int) {
 			rand.Read(str)
 			v.items[i].bigSlice[j] = fast.BytesToString(str)
 		}
+
+		v.items[i].integer = uint16(i)
 
 		generateNestedSlice(&v.items[i].nestedSlice, rand, maxSlice)
 	}
