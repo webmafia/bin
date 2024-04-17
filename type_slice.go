@@ -12,6 +12,7 @@ type sliceType struct {
 	typ              Type
 	typSize          uintptr
 	offset           uintptr
+	refTyp           reflect.Type
 	allowAllocations bool
 }
 
@@ -33,6 +34,7 @@ func getSliceType(typ reflect.Type, offset uintptr, opt *CoderOptions) (Type, er
 		typ:              subtyp,
 		typSize:          elem.Size(),
 		offset:           offset,
+		refTyp:           typ,
 		allowAllocations: opt.AllowAllocations,
 	}
 
@@ -61,25 +63,18 @@ func (t sliceType) encode(ptr unsafe.Pointer, b fast.Writer) {
 
 func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error) {
 	head := t.head(ptr)
-	calcSize := head.len + int(b.ReadUvarint())
+	calcSize := int(b.ReadUvarint())
 
 	if calcSize > head.cap {
 		if !t.allowAllocations {
 			return errors.New("not enough capacity in slice")
 		}
 
-		oldBytes := *(*[]byte)(unsafe.Pointer(&sliceHeader{
-			data: head.data,
-			len:  head.len * int(t.typSize),
-			cap:  head.len * int(t.typSize),
-		}))
+		iface := toIface(reflect.MakeSlice(t.refTyp, 0, calcSize).Interface())
+		head2 := (*sliceHeader)(iface.data)
+		*head = *head2
 
-		newBytes := fast.MakeNoZero(calcSize * int(t.typSize))
-		copy(newBytes, oldBytes)
-
-		newBytesHead := (*sliceHeader)(unsafe.Pointer(&newBytes))
-		head.data = newBytesHead.data
-		head.cap = calcSize
+		// TODO: Copy items from old slice to new slice
 	}
 
 	for i := head.len; i < calcSize; i++ {

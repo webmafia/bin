@@ -123,3 +123,18 @@ func BenchmarkReflectKind(b *testing.B) {
 		_ = reflect.TypeOf(&f).Kind()
 	}
 }
+
+func BenchmarkReflect_MakeSlice(b *testing.B) {
+	type Foo struct {
+		Foobar string
+	}
+
+	typ := reflect.TypeOf([]Foo{})
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_ = reflect.MakeSlice(typ, 0, 1024)
+	}
+
+}
