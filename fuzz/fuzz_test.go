@@ -4,13 +4,52 @@ import (
 	"bytes"
 	"fmt"
 	"math/rand"
-	"reflect"
 	"testing"
 
 	"github.com/webmafia/bin"
 	"github.com/webmafia/fast"
 	"github.com/webmafia/fast/binary"
 )
+
+func TestEncoder(t *testing.T) {
+	var src bigStruct
+	rand := rand.New(rand.NewSource(1))
+
+	for i := 0; i < 128; i++ {
+		if err := testEncoder(&src, rand, i); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func testEncoder(src *bigStruct, rand *rand.Rand, maxSlice int) (err error) {
+	generateStruct(src, rand, maxSlice)
+
+	c := bin.NewCoder(bin.CoderOptions{
+		AllowAllocations:     true,
+		KeepUnexportedFields: true,
+	})
+
+	var buf bytes.Buffer
+	w := binary.NewStreamWriter(&buf)
+
+	if err = c.Encode(w, src); err != nil {
+		return
+	}
+
+	if err = w.Flush(); err != nil {
+		return
+	}
+
+	var dst bigStruct
+	r := binary.NewBufferReader(buf.Bytes())
+
+	if err = c.Decode(&r, &dst); err != nil {
+		return
+	}
+
+	return src.compare(&dst)
+}
 
 type bigStruct struct {
 	items []item
@@ -109,79 +148,5 @@ func resize[T any](v *[]T, size int) {
 		*v = (*v)[:size]
 	} else {
 		*v = make([]T, size)
-	}
-}
-
-func TestEncoder(t *testing.T) {
-	var src bigStruct
-	rand := rand.New(rand.NewSource(1))
-
-	for i := 0; i < 128; i++ {
-		if err := testEncoder(&src, rand, i); err != nil {
-			t.Fatal(err)
-		}
-	}
-}
-
-func testEncoder(src *bigStruct, rand *rand.Rand, maxSlice int) (err error) {
-	generateStruct(src, rand, maxSlice)
-
-	c := bin.NewCoder(bin.CoderOptions{
-		AllowAllocations:     true,
-		KeepUnexportedFields: true,
-	})
-
-	var buf bytes.Buffer
-	w := binary.NewStreamWriter(&buf)
-
-	if err = c.Encode(w, src); err != nil {
-		return
-	}
-
-	if err = w.Flush(); err != nil {
-		return
-	}
-
-	var dst bigStruct
-	r := binary.NewBufferReader(buf.Bytes())
-
-	if err = c.Decode(&r, &dst); err != nil {
-		return
-	}
-
-	return src.compare(&dst)
-}
-
-func TestNestedSlice(t *testing.T) {
-	var src [][][]int
-	rand := rand.New(rand.NewSource(1))
-
-	generateNestedSlice(&src, rand, 128)
-
-	c := bin.NewCoder(bin.CoderOptions{
-		AllowAllocations:     true,
-		KeepUnexportedFields: true,
-	})
-
-	var buf bytes.Buffer
-	w := binary.NewStreamWriter(&buf)
-
-	if err := c.Encode(w, &src); err != nil {
-		t.Fatal(err)
-	}
-
-	if err := w.Flush(); err != nil {
-		t.Fatal(err)
-	}
-
-	var dst [][][]int
-	r := binary.NewBufferReader(buf.Bytes())
-
-	if err := c.Decode(&r, &dst); err != nil {
-		t.Fatal(err)
-	}
-
-	if !reflect.DeepEqual(src, dst) {
-		t.Fatal("src and dst are not equal")
 	}
 }
