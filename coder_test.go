@@ -1,11 +1,8 @@
 package bin
 
 import (
-	"bytes"
 	"fmt"
 	"io"
-	"log"
-	"runtime"
 	"testing"
 
 	"github.com/webmafia/fast/binary"
@@ -32,79 +29,6 @@ func ExampleCoder() {
 
 	fmt.Println(b.String())
 	fmt.Println(b.Bytes())
-
-	// Output: Todo
-}
-
-func ExampleCoder_Slice() {
-	type Baz struct {
-		Name string
-	}
-
-	type Bar struct {
-		A Baz
-		B Baz
-	}
-
-	type Foo struct {
-		Items []Bar
-	}
-
-	c := NewCoder(CoderOptions{
-		AllowAllocations: true,
-	})
-
-	var buf bytes.Buffer
-	b := binary.NewStreamWriter(&buf)
-
-	err := c.Encode(b, &Foo{
-		Items: []Bar{
-			{
-				A: Baz{Name: "a1"},
-				B: Baz{Name: "b1"},
-			},
-			{
-				A: Baz{Name: "a2"},
-				B: Baz{Name: "b2"},
-			},
-			{
-				A: Baz{Name: "a3"},
-				B: Baz{Name: "b3"},
-			},
-		},
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	b.Flush()
-
-	fmt.Println(buf.Len(), buf.String())
-	fmt.Println(buf.Len(), buf.Bytes())
-
-	r := binary.NewBufferReader(buf.Bytes())
-
-	var dst Foo
-
-	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Items), cap(dst.Items), dst)
-
-	if err = c.Decode(&r, &dst); err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Items), cap(dst.Items), dst)
-	r.Reset()
-
-	if err = c.Decode(&r, &dst); err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Items), cap(dst.Items), dst)
-
-	runtime.GC()
-
-	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Items), cap(dst.Items), dst)
 
 	// Output: Todo
 }
