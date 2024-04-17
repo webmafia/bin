@@ -4,11 +4,11 @@ import (
 	"testing"
 	"unsafe"
 
-	"github.com/webmafia/fast"
+	"github.com/webmafia/fast/binary"
 )
 
 func BenchmarkEncode_String(b *testing.B) {
-	buf := fast.NewBinaryBuffer(1024)
+	buf := binary.NewBufferWriter(1024)
 	enc := stringType{}
 	str := "hello there"
 
@@ -19,7 +19,7 @@ func BenchmarkEncode_String(b *testing.B) {
 }
 
 func BenchmarkEncodeInterface_String(b *testing.B) {
-	buf := fast.NewBinaryBuffer(1024)
+	buf := binary.NewBufferWriter(1024)
 	var enc Type = stringType{}
 	str := "hello there"
 

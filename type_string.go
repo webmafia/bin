@@ -3,7 +3,7 @@ package bin
 import (
 	"unsafe"
 
-	"github.com/webmafia/fast"
+	"github.com/webmafia/fast/binary"
 )
 
 type stringType struct {
@@ -19,13 +19,13 @@ func (t stringType) encodedSize(ptr unsafe.Pointer) (s int) {
 	return
 }
 
-func (f stringType) encode(ptr unsafe.Pointer, b fast.Writer) {
+func (f stringType) encode(ptr unsafe.Pointer, b binary.Writer) {
 	str := *(*string)(unsafe.Add(ptr, f.offset))
 	b.WriteUvarint(uint64(len(str)))
 	b.WriteString(str)
 }
 
-func (f stringType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) error {
+func (f stringType) decode(ptr unsafe.Pointer, b binary.Reader, nocopy bool) error {
 	n := b.ReadUvarint()
 
 	if nocopy {

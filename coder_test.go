@@ -1,12 +1,14 @@
 package bin
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
+	"runtime"
 	"testing"
 
-	"github.com/webmafia/fast"
+	"github.com/webmafia/fast/binary"
 )
 
 func ExampleCoder() {
@@ -18,7 +20,7 @@ func ExampleCoder() {
 
 	c := NewCoder()
 
-	b := fast.NewBinaryBuffer(1024)
+	b := binary.NewBufferWriter(1024)
 
 	err := c.Encode(b, &Foo{
 		Name: "mjau",
@@ -35,43 +37,74 @@ func ExampleCoder() {
 }
 
 func ExampleCoder_Slice() {
+	type Baz struct {
+		Name string
+	}
+
+	type Bar struct {
+		A Baz
+		B Baz
+	}
+
 	type Foo struct {
-		Names []string
+		Items []Bar
 	}
 
 	c := NewCoder(CoderOptions{
 		AllowAllocations: true,
 	})
 
-	b := fast.NewBinaryBuffer(1024)
+	var buf bytes.Buffer
+	b := binary.NewStreamWriter(&buf)
 
 	err := c.Encode(b, &Foo{
-		Names: []string{"foo", "bar", "baz"},
+		Items: []Bar{
+			{
+				A: Baz{Name: "a1"},
+				B: Baz{Name: "b1"},
+			},
+			{
+				A: Baz{Name: "a2"},
+				B: Baz{Name: "b2"},
+			},
+			{
+				A: Baz{Name: "a3"},
+				B: Baz{Name: "b3"},
+			},
+		},
 	})
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(b.String())
-	fmt.Println(b.Bytes())
+	b.Flush()
 
-	r := fast.NewBinaryBufferReader(b)
+	fmt.Println(buf.Len(), buf.String())
+	fmt.Println(buf.Len(), buf.Bytes())
+
+	r := binary.NewBufferReader(buf.Bytes())
 
 	var dst Foo
+
+	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Items), cap(dst.Items), dst)
 
 	if err = c.Decode(&r, &dst); err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Names), cap(dst.Names), dst)
+	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Items), cap(dst.Items), dst)
 	r.Reset()
 
 	if err = c.Decode(&r, &dst); err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Names), cap(dst.Names), dst)
+	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Items), cap(dst.Items), dst)
+
+	runtime.GC()
+
+	fmt.Printf("len %d, cap %d: %#v\n", len(dst.Items), cap(dst.Items), dst)
 
 	// Output: Todo
 }
@@ -85,7 +118,7 @@ func BenchmarkCoderEncode(b *testing.B) {
 
 	c := NewCoder()
 
-	buf := fast.NewBinaryBuffer(1024)
+	buf := binary.NewBufferWriter(1024)
 
 	b.ResetTimer()
 
@@ -111,7 +144,7 @@ func BenchmarkCoderEncode_Stream(b *testing.B) {
 
 	c := NewCoder()
 
-	buf := fast.NewBinaryStream(io.Discard)
+	buf := binary.NewStreamWriter(io.Discard)
 
 	b.ResetTimer()
 
@@ -135,7 +168,7 @@ func BenchmarkCoderDecode(b *testing.B) {
 
 	c := NewCoder()
 
-	buf := fast.NewBinaryBuffer(1024)
+	buf := binary.NewBufferWriter(1024)
 
 	err := c.Encode(buf, &Foo{
 		Name: "mjau",
@@ -145,7 +178,7 @@ func BenchmarkCoderDecode(b *testing.B) {
 		b.Fatal(err)
 	}
 
-	r := fast.NewBinaryBufferReader(buf)
+	r := binary.NewBufferReader(buf.Bytes())
 
 	var f Foo
 
@@ -171,7 +204,7 @@ func BenchmarkCoderDecodeNocopy(b *testing.B) {
 
 	c := NewCoder()
 
-	buf := fast.NewBinaryBuffer(1024)
+	buf := binary.NewBufferWriter(1024)
 
 	err := c.Encode(buf, &Foo{
 		Name: "mjau",
@@ -181,7 +214,7 @@ func BenchmarkCoderDecodeNocopy(b *testing.B) {
 		b.Fatal(err)
 	}
 
-	r := fast.NewBinaryBufferReader(buf)
+	r := binary.NewBufferReader(buf.Bytes())
 
 	var f Foo
 
@@ -209,7 +242,7 @@ func BenchmarkCoderParallell(b *testing.B) {
 	b.ResetTimer()
 
 	b.RunParallel(func(p *testing.PB) {
-		buf := fast.NewBinaryBuffer(1024)
+		buf := binary.NewBufferWriter(1024)
 
 		for p.Next() {
 			err := c.Encode(buf, &Foo{
@@ -233,7 +266,7 @@ func BenchmarkCoderParallellDecode(b *testing.B) {
 	}
 
 	c := NewCoder()
-	buf := fast.NewBinaryBuffer(1024)
+	buf := binary.NewBufferWriter(1024)
 
 	err := c.Encode(buf, &Foo{
 		Name: "mjau",
@@ -246,7 +279,7 @@ func BenchmarkCoderParallellDecode(b *testing.B) {
 	b.ResetTimer()
 
 	b.RunParallel(func(p *testing.PB) {
-		r := fast.NewBinaryBufferReader(buf)
+		r := binary.NewBufferReader(buf.Bytes())
 		var f Foo
 
 		for p.Next() {
@@ -269,7 +302,7 @@ func BenchmarkCoderParallellDecodeNocopy(b *testing.B) {
 	}
 
 	c := NewCoder()
-	buf := fast.NewBinaryBuffer(1024)
+	buf := binary.NewBufferWriter(1024)
 
 	err := c.Encode(buf, &Foo{
 		Name: "mjau",
@@ -282,7 +315,7 @@ func BenchmarkCoderParallellDecodeNocopy(b *testing.B) {
 	b.ResetTimer()
 
 	b.RunParallel(func(p *testing.PB) {
-		r := fast.NewBinaryBufferReader(buf)
+		r := binary.NewBufferReader(buf.Bytes())
 		var f Foo
 
 		for p.Next() {

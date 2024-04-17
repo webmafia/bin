@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/webmafia/fast"
+	"github.com/webmafia/fast/binary"
 )
 
 type sliceType struct {
@@ -52,7 +52,7 @@ func (t sliceType) encodedSize(ptr unsafe.Pointer) (s int) {
 	return
 }
 
-func (t sliceType) encode(ptr unsafe.Pointer, b fast.Writer) {
+func (t sliceType) encode(ptr unsafe.Pointer, b binary.Writer) {
 	head := t.head(ptr)
 	b.WriteUvarint(uint64(head.len))
 
@@ -61,7 +61,7 @@ func (t sliceType) encode(ptr unsafe.Pointer, b fast.Writer) {
 	}
 }
 
-func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error) {
+func (t sliceType) decode(ptr unsafe.Pointer, b binary.Reader, nocopy bool) (err error) {
 	head := t.head(ptr)
 	calcSize := int(b.ReadUvarint())
 
@@ -70,9 +70,9 @@ func (t sliceType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy
 			return errors.New("not enough capacity in slice")
 		}
 
-		iface := toIface(reflect.MakeSlice(t.refTyp, 0, calcSize).Interface())
-		head2 := (*sliceHeader)(iface.data)
-		*head = *head2
+		newSlice := reflect.MakeSlice(t.refTyp, 0, calcSize)
+		sliceHeader := reflect.NewAt(t.refTyp, ptr)
+		sliceHeader.Elem().Set(newSlice)
 
 		// TODO: Copy items from old slice to new slice
 	}

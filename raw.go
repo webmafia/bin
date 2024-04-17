@@ -3,7 +3,7 @@ package bin
 import (
 	"unsafe"
 
-	fast "github.com/webmafia/fast"
+	"github.com/webmafia/fast/binary"
 )
 
 var _ Type = raw{}
@@ -24,13 +24,13 @@ func (r raw) bytes(ptr unsafe.Pointer) []byte {
 }
 
 // decode implements Type.
-func (r raw) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, _ bool) (err error) {
+func (r raw) decode(ptr unsafe.Pointer, b binary.Reader, _ bool) (err error) {
 	_, err = b.Read(r.bytes(ptr))
 	return
 }
 
 // encode implements Type.
-func (r raw) encode(ptr unsafe.Pointer, b fast.Writer) {
+func (r raw) encode(ptr unsafe.Pointer, b binary.Writer) {
 	b.Write(r.bytes(ptr))
 }
 

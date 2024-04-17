@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"unsafe"
 
-	"github.com/webmafia/fast"
+	"github.com/webmafia/fast/binary"
 )
 
 type Coder struct {
@@ -30,7 +30,7 @@ func NewCoder(opt ...CoderOptions) *Coder {
 	return c
 }
 
-func (c *Coder) Encode(b fast.Writer, v any) (err error) {
+func (c *Coder) Encode(b binary.Writer, v any) (err error) {
 	typ := reflect.TypeOf(v)
 
 	if typ.Kind() != reflect.Pointer {
@@ -49,7 +49,7 @@ func (c *Coder) Encode(b fast.Writer, v any) (err error) {
 	return
 }
 
-func (c *Coder) Decode(b *fast.BinaryBufferReader, v any, nocopy ...bool) (err error) {
+func (c *Coder) Decode(b binary.Reader, v any, nocopy ...bool) (err error) {
 	typ := reflect.TypeOf(v)
 
 	if typ.Kind() != reflect.Pointer {

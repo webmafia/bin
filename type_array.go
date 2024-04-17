@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/webmafia/fast"
+	"github.com/webmafia/fast/binary"
 )
 
 type arrayType struct {
@@ -40,13 +40,13 @@ func (t arrayType) encodedSize(ptr unsafe.Pointer) (s int) {
 	return
 }
 
-func (t arrayType) encode(ptr unsafe.Pointer, b fast.Writer) {
+func (t arrayType) encode(ptr unsafe.Pointer, b binary.Writer) {
 	for i := 0; i < t.len; i++ {
 		t.typ.encode(unsafe.Add(ptr, t.offset+uintptr(i)*t.typSize), b)
 	}
 }
 
-func (t arrayType) decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error) {
+func (t arrayType) decode(ptr unsafe.Pointer, b binary.Reader, nocopy bool) (err error) {
 	for i := 0; i < t.len; i++ {
 		t.typ.decode(unsafe.Add(ptr, t.offset+uintptr(i)*t.typSize), b, nocopy)
 	}

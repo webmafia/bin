@@ -6,13 +6,13 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/webmafia/fast"
+	"github.com/webmafia/fast/binary"
 )
 
 type Type interface {
 	encodedSize(ptr unsafe.Pointer) int
-	encode(ptr unsafe.Pointer, b fast.Writer)
-	decode(ptr unsafe.Pointer, b *fast.BinaryBufferReader, nocopy bool) (err error)
+	encode(ptr unsafe.Pointer, b binary.Writer)
+	decode(ptr unsafe.Pointer, b binary.Reader, nocopy bool) (err error)
 	typeHash(io.Writer)
 }
 
