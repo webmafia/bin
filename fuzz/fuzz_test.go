@@ -69,7 +69,7 @@ func TestStream(t *testing.T) {
 	var src bigStruct
 	rand := rand.New(rand.NewSource(1))
 
-	generateStruct(&src, rand, 128)
+	generateStruct(&src, rand, 256)
 
 	c := bin.NewCoder(bin.CoderOptions{
 		AllowAllocations:     true,

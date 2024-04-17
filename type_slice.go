@@ -72,23 +72,9 @@ func (t sliceType) decode(ptr unsafe.Pointer, b binary.Reader, nocopy bool) (err
 
 		// Allocate new slice with the calculated size
 		newSlice := reflect.MakeSlice(t.refTyp, calcSize, calcSize)
-
-		// Safely update the original slice header
-		*(*sliceHeader)(ptr) = sliceHeader{
-			data: newSlice.UnsafePointer(),
-			len:  0, // will set length after decoding elements
-			cap:  calcSize,
-		}
-		head = (*sliceHeader)(ptr) // Update the local head pointer to reflect changes
-
-		// Copy existing elements to new slice if necessary
-		// if head.len > 0 {
-		// 	oldData := unsafe.Slice((*byte)(head.data), head.len*int(t.typSize))
-		// 	copy(newSliceHeader.data, oldData)
-		// }
-
-		// Update the original slice pointer to point to the new slice
-		// *head = *newSliceHeader
+		head.data = newSlice.UnsafePointer()
+		head.cap = calcSize
+		head.len = 0
 	}
 
 	for i := 0; i < calcSize; i++ {
