@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/webmafia/bin"
 	"github.com/webmafia/fast"
 	"github.com/webmafia/fast/binary"
 )
@@ -25,7 +24,7 @@ func TestEncoder(t *testing.T) {
 func testEncoder(src *bigStruct, rand *rand.Rand, maxSlice int) (err error) {
 	generateStruct(src, rand, maxSlice)
 
-	c := bin.NewCoder(bin.CoderOptions{
+	c := NewCoder(CoderOptions{
 		AllowAllocations:     true,
 		KeepUnexportedFields: true,
 	})
@@ -52,7 +51,12 @@ func testEncoder(src *bigStruct, rand *rand.Rand, maxSlice int) (err error) {
 }
 
 type bigStruct struct {
-	items []item
+	items []bigStructItem
+}
+
+type bigStructItem struct {
+	bigSlice    []string
+	nestedSlice [][][]int
 }
 
 func (a *bigStruct) compare(b *bigStruct) (err error) {
@@ -95,11 +99,6 @@ func (a *bigStruct) compare(b *bigStruct) (err error) {
 	}
 
 	return
-}
-
-type item struct {
-	bigSlice    []string
-	nestedSlice [][][]int
 }
 
 func generateStruct(v *bigStruct, rand *rand.Rand, maxSlice int) {

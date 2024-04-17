@@ -27,10 +27,9 @@ func ExampleCoder() {
 		panic(err)
 	}
 
-	fmt.Println(b.String())
 	fmt.Println(b.Bytes())
 
-	// Output: Todo
+	// Output: [4 109 106 97 117 0 0 0 0 0 0 0 0]
 }
 
 func BenchmarkCoderEncode(b *testing.B) {
