@@ -24,7 +24,7 @@ func TestEncoder(t *testing.T) {
 func testEncoder(src *bigStruct, rand *rand.Rand, maxSlice int) (err error) {
 	generateStruct(src, rand, maxSlice)
 
-	c := NewCoder(CoderOptions{
+	c := NewCoder(Options{
 		AllowAllocations:     true,
 		KeepUnexportedFields: true,
 	})
@@ -33,10 +33,6 @@ func testEncoder(src *bigStruct, rand *rand.Rand, maxSlice int) (err error) {
 	w := binary.NewStreamWriter(&buf)
 
 	if err = c.Encode(w, src); err != nil {
-		return
-	}
-
-	if err = w.Flush(); err != nil {
 		return
 	}
 
